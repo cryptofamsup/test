@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КРИПТО-СУББОТНИК #2 — Голова Трейдера</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Unbounded:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+:root {
+  --bg: #0a0a0a;
+  --card: #161616;
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.18);
+  --accent: #c8f135;
+  --text: #ffffff;
+  --muted: rgba(255,255,255,0.4);
+  --muted2: rgba(255,255,255,0.6);
+  --red: #ff4444;
+}
+
+body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; font-size:15px; line-height:1.6; overflow-x:hidden; padding-top:80px; }
+
+nav { position:fixed; top:0; left:0; right:0; z-index:100; border-bottom:1px solid var(--border); backdrop-filter:blur(20px); background:rgba(10,10,10,0.9); padding:0 40px; height:80px; display:flex; align-items:center; justify-content:space-between; }
+.nav-logo { font-family:'Unbounded',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.05em; color:var(--text); text-decoration:none; }
+.nav-logo span { color:var(--accent); }
+.nav-links { display:flex; gap:28px; list-style:none; }
+.nav-links a { font-size:13px; color:var(--muted2); text-decoration:none; transition:color 0.2s; font-weight:500; }
+.nav-links a:hover { color:var(--text); }
+.nav-cta { background:var(--accent); color:#000; font-family:'Unbounded',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.05em; padding:10px 22px; border-radius:6px; text-decoration:none; animation:pulse-btn 2s ease-in-out infinite; }
+.nav-cta:hover { opacity:0.85; animation:none; }
+@keyframes pulse-btn { 0%,100%{box-shadow:0 0 0 0 rgba(200,241,53,0.5);}50%{box-shadow:0 0 0 10px rgba(200,241,53,0);} }
+
+.btn { display:inline-flex; align-items:center; gap:8px; font-family:'Unbounded',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.05em; padding:16px 32px; border-radius:8px; text-decoration:none; cursor:pointer; border:none; transition:all 0.2s; }
+.btn-accent { background:var(--accent); color:#000; }
+.btn-accent:hover { opacity:0.88; transform:translateY(-1px); }
+.btn-outline { background:transparent; color:var(--text); border:1px solid var(--border-hover); }
+.btn-outline:hover { border-color:var(--text); }
+.btn-lg { font-size:14px; padding:20px 48px; }
+
+section { border-bottom:1px solid var(--border); }
+.section-wrap { max-width:1100px; margin:0 auto; padding:100px 40px; }
+.s-header { display:flex; align-items:flex-start; justify-content:space-between; gap:40px; margin-bottom:64px; flex-wrap:wrap; }
+.s-title { font-family:'Unbounded',sans-serif; font-size:clamp(28px,4vw,48px); font-weight:800; line-height:0.95; letter-spacing:-0.03em; }
+.s-desc { font-size:15px; color:var(--muted2); max-width:360px; line-height:1.7; padding-top:12px; }
+
+/* HERO */
+#hero { min-height:90vh; display:flex; align-items:center; justify-content:center; padding:60px 40px; position:relative; overflow:hidden; border-bottom:1px solid var(--border); text-align:center; background-image:url('hero-bg.jpg'); background-size:cover; background-position:center 35%; }
+#hero::before { content:''; position:absolute; inset:0; background:rgba(10,10,10,0.78); z-index:1; }
+.hero-center { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; max-width:860px; width:100%; }
+.hero-label { font-family:'Unbounded',sans-serif; font-size:clamp(24px,4vw,48px); font-weight:900; letter-spacing:-0.02em; text-transform:uppercase; color:var(--text); line-height:1; margin-bottom:16px; }
+.hero-num-line { font-family:'Unbounded',sans-serif; font-size:clamp(14px,2vw,20px); font-weight:600; color:var(--muted2); letter-spacing:0.02em; margin-bottom:28px; }
+.hero-subtitle { font-family:'Unbounded',sans-serif; font-size:clamp(42px,7vw,88px); font-weight:900; line-height:1.05; letter-spacing:-0.03em; color:var(--accent); margin-bottom:32px; }
+.hero-tagline { font-size:clamp(15px,2vw,19px); color:var(--muted2); line-height:1.6; margin-bottom:20px; max-width:680px; }
+.spots-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(255,68,68,0.12); border:1px solid rgba(255,68,68,0.3); border-radius:40px; padding:8px 20px; font-size:13px; font-weight:600; color:var(--red); margin-bottom:28px; }
+.spots-badge span { color:var(--text); }
+
+/* SPEAKERS */
+.speakers-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+.speaker-card { border:1px solid var(--border); border-radius:20px; background:var(--card); overflow:hidden; }
+.speaker-card-photo { width:100%; height:300px; object-fit:cover; object-position:center top; display:block; }
+.speaker-card-placeholder { width:100%; height:300px; background:linear-gradient(135deg,#1a1a1a,#222); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; }
+.speaker-card-body { padding:28px 32px; }
+.speaker-card-tag { font-family:'Unbounded',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+.speaker-card-name { font-family:'Unbounded',sans-serif; font-size:22px; font-weight:800; letter-spacing:-0.02em; line-height:1.1; margin-bottom:6px; }
+.speaker-card-handle { font-size:13px; color:var(--accent); font-weight:600; margin-bottom:16px; }
+.speaker-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
+.stat-box { border:1px solid var(--border); border-radius:10px; padding:14px; text-align:center; }
+.stat-box-num { font-family:'Unbounded',sans-serif; font-size:20px; font-weight:900; color:var(--accent); line-height:1; margin-bottom:4px; }
+.stat-box-label { font-size:10px; color:var(--muted); font-weight:500; }
+.speaker-bio { font-size:14px; color:var(--muted2); line-height:1.7; margin-bottom:20px; }
+.speaker-will-tell { border-top:1px solid var(--border); padding-top:16px; font-size:14px; color:var(--muted2); line-height:1.6; }
+.speaker-will-tell strong { color:var(--accent); display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+.social-btn { display:inline-flex; align-items:center; gap:7px; border:1px solid var(--border); border-radius:7px; padding:8px 13px; font-size:12px; font-weight:600; color:var(--muted2); text-decoration:none; background:var(--card); transition:all 0.2s; }
+.social-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+/* PROMO */
+.promo-card { background:linear-gradient(135deg,rgba(200,241,53,0.06),rgba(200,241,53,0.02)); border:1px solid rgba(200,241,53,0.2); border-radius:20px; padding:60px; text-align:center; }
+.promo-title { font-family:'Unbounded',sans-serif; font-size:clamp(22px,3.5vw,42px); font-weight:900; letter-spacing:-0.03em; line-height:1.1; margin-bottom:20px; }
+.promo-title span { color:var(--accent); }
+.promo-sub { font-size:17px; color:var(--muted2); line-height:1.7; margin-bottom:32px; max-width:580px; margin-left:auto; margin-right:auto; }
+.promo-checks { display:flex; flex-direction:column; gap:12px; max-width:520px; margin:0 auto 36px; text-align:left; }
+.promo-check { display:flex; align-items:flex-start; gap:12px; font-size:15px; color:var(--muted2); line-height:1.5; }
+.promo-check::before { content:'✓'; color:var(--accent); font-weight:700; flex-shrink:0; margin-top:2px; }
+
+/* PAIN */
+.pain-arrow-list { display:flex; flex-direction:column; margin-bottom:40px; }
+.pain-item { display:flex; align-items:flex-start; gap:16px; padding:22px 0; border-bottom:1px solid var(--border); font-size:16px; color:var(--muted2); line-height:1.6; }
+.pain-item:last-child { border-bottom:none; }
+.pain-arr { color:var(--accent); font-weight:700; flex-shrink:0; font-size:20px; }
+.pain-conclusion { border:1px solid rgba(200,241,53,0.2); border-radius:14px; padding:32px 36px; background:rgba(200,241,53,0.03); font-size:16px; color:var(--muted2); line-height:1.7; margin-bottom:40px; }
+
+/* PROGRAM */
+.program-blocks { display:flex; flex-direction:column; gap:14px; }
+.prog-block { border:1px solid var(--border); border-radius:14px; background:var(--card); padding:28px 32px; transition:border-color 0.2s; }
+.prog-block:hover { border-color:var(--border-hover); }
+.prog-block-header { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.prog-block-icon { font-size:22px; flex-shrink:0; }
+.prog-block-title { font-family:'Unbounded',sans-serif; font-size:15px; font-weight:700; letter-spacing:-0.01em; line-height:1.2; }
+.prog-block-points { display:flex; flex-direction:column; gap:8px; padding-left:36px; }
+.prog-point { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--muted2); line-height:1.5; }
+.prog-point::before { content:'•'; color:var(--accent); font-weight:700; flex-shrink:0; }
+.prog-result { margin-top:12px; padding-left:36px; font-size:13px; color:var(--accent); font-weight:600; }
+
+/* GIFTS */
+.gifts-card { border:1px solid rgba(255,68,68,0.2); border-radius:20px; padding:60px; background:linear-gradient(135deg,rgba(255,68,68,0.04),transparent); text-align:center; }
+.gifts-badge { display:inline-block; font-family:'Unbounded',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; background:rgba(255,68,68,0.12); color:var(--red); border:1px solid rgba(255,68,68,0.25); padding:7px 18px; border-radius:40px; margin-bottom:28px; }
+.gifts-title { font-family:'Unbounded',sans-serif; font-size:clamp(28px,4vw,52px); font-weight:900; letter-spacing:-0.03em; line-height:0.95; margin-bottom:16px; }
+.gifts-title span { color:var(--red); }
+.gifts-sub { font-size:15px; color:var(--muted2); max-width:460px; margin:0 auto 48px; line-height:1.7; }
+.gifts-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; text-align:left; }
+.gift-item { border:1px solid var(--border); border-radius:12px; padding:20px; background:var(--card); display:flex; align-items:flex-start; gap:14px; transition:border-color 0.2s; }
+.gift-item:hover { border-color:var(--border-hover); }
+.gift-icon { width:44px; height:44px; border-radius:10px; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; background-size:cover; background-position:center; }
+.gift-name { font-size:13px; font-weight:600; color:var(--text); line-height:1.4; margin-bottom:4px; }
+.gift-desc { font-size:12px; color:var(--muted); line-height:1.5; }
+
+/* DETAILS */
+.details-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:0; }
+.detail-cell { padding:24px; border:1px solid var(--border); border-radius:14px; background:var(--card); }
+.detail-cell-label { font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; display:block; }
+.detail-cell-icon { font-size:20px; margin-bottom:12px; display:block; }
+.detail-cell-value { font-family:'Unbounded',sans-serif; font-size:14px; font-weight:600; line-height:1.4; color:var(--text); }
+
+/* PRICING */
+.pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.pricing-card { border:1px solid var(--border); border-radius:16px; padding:36px; background:var(--card); display:flex; flex-direction:column; gap:14px; position:relative; }
+.pricing-card--accent { border-color:rgba(200,241,53,0.3); background:rgba(200,241,53,0.03); }
+.pricing-badge { position:absolute; top:-12px; left:32px; background:var(--accent); color:#000; font-family:'Unbounded',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.08em; padding:5px 14px; border-radius:20px; }
+.pricing-label { font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+.pricing-price { font-family:'Unbounded',sans-serif; font-size:56px; font-weight:900; letter-spacing:-0.03em; line-height:1; }
+.pricing-price span { color:var(--accent); }
+.pricing-features { display:flex; flex-direction:column; gap:8px; flex:1; }
+.pricing-feature { display:flex; align-items:flex-start; gap:8px; font-size:13px; color:var(--muted2); line-height:1.5; }
+.pricing-feature::before { content:'✓'; color:var(--accent); font-weight:700; flex-shrink:0; }
+.pricing-desc { font-size:14px; color:var(--muted2); line-height:1.6; flex:1; }
+.pricing-why { border:1px solid rgba(200,241,53,0.15); border-radius:14px; padding:28px 32px; background:rgba(200,241,53,0.03); margin-top:28px; }
+.pricing-warn { display:flex; align-items:center; gap:10px; border:1px solid rgba(255,68,68,0.2); border-radius:10px; padding:16px 20px; background:rgba(255,68,68,0.04); margin-top:14px; font-size:14px; color:var(--muted2); }
+
+/* GUARANTEE */
+.guarantee-card { border:1px solid rgba(200,241,53,0.2); border-radius:20px; padding:48px 56px; background:rgba(200,241,53,0.02); display:flex; align-items:flex-start; gap:32px; }
+.guarantee-icon { font-size:48px; flex-shrink:0; }
+.guarantee-title { font-family:'Unbounded',sans-serif; font-size:22px; font-weight:800; letter-spacing:-0.02em; margin-bottom:14px; }
+.guarantee-text { font-size:15px; color:var(--muted2); line-height:1.7; margin-bottom:20px; }
+
+/* GALLERY */
+.gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); grid-auto-rows:220px; gap:8px; }
+.gallery-item { overflow:hidden; border-radius:12px; background:var(--card); }
+.gallery-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease; }
+.gallery-item:hover img { transform:scale(1.04); }
+.gallery-tall { grid-row:span 2; }
+.reviews-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; align-items:start; }
+.review-card { border-radius:16px; overflow:hidden; transition:transform 0.2s; }
+.review-card:hover { transform:translateY(-3px); }
+.review-card img { display:block; width:100%; height:auto; }
+
+/* PARTNERS */
+.partners-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.partner-card { display:flex; align-items:center; gap:24px; border:1px solid var(--border); border-radius:16px; padding:32px; background:var(--card); text-decoration:none; transition:border-color 0.2s,transform 0.2s; }
+.partner-card:hover { border-color:rgba(255,255,255,0.2); transform:translateY(-2px); }
+.partner-logo { height:64px; width:64px; object-fit:contain; border-radius:12px; flex-shrink:0; }
+.partner-name { font-family:'Unbounded',sans-serif; font-size:16px; font-weight:700; color:var(--text); margin-bottom:8px; }
+.partner-desc { font-size:13px; color:var(--muted2); line-height:1.5; margin-bottom:10px; }
+.partner-link { font-size:12px; font-weight:600; color:var(--accent); }
+
+/* FAQ */
+.faq-list { display:flex; flex-direction:column; }
+.faq-item { border-bottom:1px solid var(--border); overflow:hidden; }
+.faq-trigger { display:flex; align-items:center; justify-content:space-between; padding:24px 0; cursor:pointer; user-select:none; gap:16px; }
+.faq-q { font-size:15px; font-weight:600; color:var(--muted2); transition:color 0.2s; flex:1; }
+.faq-item.open .faq-q,.faq-trigger:hover .faq-q { color:var(--text); }
+.faq-icon { width:28px; height:28px; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--muted); flex-shrink:0; transition:all 0.3s; }
+.faq-item.open .faq-icon { border-color:var(--accent); color:var(--accent); transform:rotate(45deg); }
+.faq-body { display:none; padding:0 0 24px 0; font-size:14px; color:var(--muted2); line-height:1.75; max-width:680px; }
+.faq-item.open .faq-body { display:block; }
+
+/* CTA */
+#cta-final { border-bottom:none; }
+.cta-inner { text-align:center; padding:120px 40px; max-width:1100px; margin:0 auto; position:relative; }
+.cta-bg { position:absolute; inset:0; background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(200,241,53,0.04) 0%,transparent 70%); pointer-events:none; }
+.cta-eyebrow { font-family:'Unbounded',sans-serif; font-size:10px; font-weight:600; letter-spacing:0.15em; color:var(--muted); text-transform:uppercase; margin-bottom:24px; }
+.cta-title { font-family:'Unbounded',sans-serif; font-size:clamp(44px,7vw,88px); font-weight:900; line-height:0.9; letter-spacing:-0.04em; margin-bottom:24px; }
+.cta-title span { color:var(--accent); }
+.cta-sub { font-size:16px; color:var(--muted2); max-width:420px; margin:0 auto 24px; line-height:1.7; }
+
+/* FOOTER */
+footer { border-top:1px solid var(--border); padding:32px 40px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+.footer-logo { font-family:'Unbounded',sans-serif; font-size:13px; font-weight:700; color:var(--text); }
+.footer-logo span { color:var(--accent); }
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  #hero{padding:40px 20px;}
+  .section-wrap{padding:64px 20px;}
+  .s-header{flex-direction:column;}
+  .speakers-grid{grid-template-columns:1fr;}
+  .details-grid{grid-template-columns:repeat(2,1fr);}
+  .detail-cell{padding:20px;}
+  .gifts-card{padding:32px 20px;}
+  .gifts-grid{grid-template-columns:1fr;}
+  .pricing-grid{grid-template-columns:1fr;}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px;}
+  .gallery-tall{grid-row:span 1;}
+  .reviews-grid{grid-template-columns:1fr;}
+  .partners-grid{grid-template-columns:1fr;}
+  .guarantee-card{flex-direction:column;padding:32px 24px;}
+  .promo-card{padding:40px 24px;}
+  .cta-inner{padding:80px 20px;}
+  footer{padding:24px 20px;flex-direction:column;align-items:flex-start;}
+  #pain .section-wrap > div[style*="grid-template-columns:repeat(3"] { grid-template-columns:1fr !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div style="display:flex;flex-direction:column;gap:6px;">
+    <a href="https://t.me/W3Belarus" target="_blank">
+      <img src="Logo_W3B_Ai_horizont.png" alt="W3B" style="height:auto;width:120px;display:block;">
+    </a>
+    <a href="#" class="nav-logo">KRIPTO<span>ROMM</span></a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#speakers">Спикеры</a></li>
+    <li><a href="#program">Программа</a></li>
+    <li><a href="#tickets">Билеты</a></li>
+    <li><a href="#bonuses">Подарки</a></li>
+    <li><a href="#faq">Вопросы</a></li>
+  </ul>
+  <a href="#tickets" class="nav-cta">ПРИНЯТЬ УЧАСТИЕ</a>
+</nav>
+
+<!-- БЛОК 1: HERO -->
+<section id="hero">
+  <div class="hero-center">
+    <div class="hero-num-line">4 апреля 2026 · Минск</div>
+    <h1 class="hero-subtitle" style="font-size:clamp(24px,3.5vw,52px);line-height:1.1;margin-top:16px;color:#fff;">КАК <span style="color:#c8f135;">ПЕРЕСТАТЬ ТЕРЯТЬ</span><br>ДЕНЬГИ НА ТРЕЙДИНГЕ</h1>
+    <p class="hero-tagline">Офлайн мастер-класс: 3 часа, которые сэкономят тебе 6 месяцев сливов депозитов</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin:24px 0 32px;text-align:left;max-width:480px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:15px;color:rgba(255,255,255,0.75);"><span style="color:#c8f135;font-weight:700;flex-shrink:0;">✓</span>Узнаешь, почему 90% трейдеров сливают (и как войти в 10% прибыльных)</div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:15px;color:rgba(255,255,255,0.75);"><span style="color:#c8f135;font-weight:700;flex-shrink:0;">✓</span>Получишь пошаговый план как выйти на стабильную прибыльную торговлю</div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:15px;color:rgba(255,255,255,0.75);"><span style="color:#c8f135;font-weight:700;flex-shrink:0;">✓</span>Разберёшь свои реальные ошибки со спикером</div>
+    </div>
+    <div class="spots-badge">⚡️ Осталось <span class="seats-num">12</span> мест из <span class="seats-total">50</span></div>
+    <button onclick="openForm()" class="btn btn-accent btn-lg">ПОДАТЬ ЗАЯВКУ →</button>
+  </div>
+</section>
+
+<!-- БЛОК 2: СПИКЕРЫ -->
+<section id="speakers">
+  <div class="section-wrap">
+    <div class="s-header">
+      <div><h2 class="s-title">СПИКЕРЫ</h2></div>
+      <p class="s-desc">Практикующие трейдеры. Не теоретики — люди с реальными результатами.</p>
+    </div>
+    <div class="speakers-grid">
+
+      <div class="speaker-card">
+        <img src="roman-cut.jpg" alt="Роман Мартыненко" class="speaker-card-photo">
+        <div class="speaker-card-body">
+          <div class="speaker-card-tag">Спикер #1</div>
+          <div class="speaker-card-name">Роман Мартыненко</div>
+          <div class="speaker-card-handle">@KRIPTOROMM</div>
+          <div class="speaker-stats">
+            <div class="stat-box"><div class="stat-box-num">5+</div><div class="stat-box-label">лет в трейдинге</div></div>
+            <div class="stat-box"><div class="stat-box-num">200+</div><div class="stat-box-label">учеников</div></div>
+            <div class="stat-box"><div class="stat-box-num">43К</div><div class="stat-box-label">подписчиков</div></div>
+            <div class="stat-box"><div class="stat-box-num">Live</div><div class="stat-box-label">формат</div></div>
+          </div>
+          <div class="speaker-bio">Инвестор и практикующий трейдер. Автор блога KRIPTOROMM. 5 лет в крипте, обучил 200+ трейдеров.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a href="https://t.me/kriptoromm" target="_blank" class="social-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+              Telegram
+            </a>
+            <a href="https://www.youtube.com/@KRIPTOROMM" target="_blank" class="social-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+              YouTube
+            </a>
+            <a href="https://www.instagram.com/kriptoromm" target="_blank" class="social-btn">Instagram</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <a href="https://www.instagram.com/reel/DWXCKoVDnXJ/?igsh=MXYwbmNiNTV1cGk5eA==" target="_blank" style="display:block;position:relative;width:100%;height:300px;overflow:hidden;text-decoration:none;">
+          <img src="speaker2-thumb.jpg" alt="Спикер 2" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;">
+            <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.25);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;transition:transform 0.2s;box-shadow:0 0 0 8px rgba(255,255,255,0.1);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.6);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:#fff;display:flex;align-items:center;gap:6px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+            Instagram Reels
+          </div>
+        </a>
+        <div class="speaker-card-body">
+          <div class="speaker-card-tag">Спикер #2</div>
+          <div class="speaker-card-name">Роман</div>
+          <div class="speaker-card-handle" style="color:var(--muted2);">Трейдер · Hash Hedge</div>
+          <div class="speaker-bio">
+            Занял <strong style="color:var(--text);">1-е место</strong> на турнире трейдеров Никиты Ануфриева (Хедлайнеры).<br>
+            Заработал <strong style="color:var(--accent);">$4 000</strong> за турнир.<br>
+            Сейчас управляет капиталом <strong style="color:var(--accent);">$100 000</strong> от Hash Hedge.
+          </div>
+          <div class="speaker-will-tell">
+            <strong>Расскажет на мастер-классе:</strong>
+            Как получить $100 000 в управление и торговать на чужие деньги.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:28px;padding:20px 28px;border:1px solid var(--border);border-radius:14px;background:var(--card);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <img src="logo-w3b-icon.png" alt="W3B" style="height:28px;width:28px;object-fit:contain;">
+      <span style="font-size:13px;color:var(--muted2);">Организатор — W3B Community Belarus</span>
+      <a href="https://t.me/W3Belarus" target="_blank" class="social-btn" style="margin-left:auto;">Telegram</a>
+      <a href="https://www.instagram.com/w3belarus?igsh=b2M2dzcxenphc2lq" target="_blank" class="social-btn">Instagram</a>
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 4: БОЛИ -->
+<section id="pain">
+  <div class="section-wrap">
+    <div class="s-header">
+      <div><h2 class="s-title">ТЕБЕ<br>ЗНАКОМО?</h2></div>
+      <p class="s-desc">Виноват не анализ — а то, как твоя голова ведёт себя в стрессе.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;">
+
+      <div style="border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card);">
+        <div style="height:200px;overflow:hidden;">
+          <img src="gallery-1.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <div style="padding:20px;">
+          <div style="font-size:20px;color:var(--accent);font-weight:700;margin-bottom:10px;">→</div>
+          <div style="font-size:14px;color:var(--muted2);line-height:1.6;">Знаешь про риск-менеджмент, но в моменте сделки <strong style="color:var(--text);">забываешь все правила</strong></div>
+        </div>
+      </div>
+
+      <div style="border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card);">
+        <div style="height:200px;overflow:hidden;">
+          <img src="gallery-13.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <div style="padding:20px;">
+          <div style="font-size:20px;color:var(--accent);font-weight:700;margin-bottom:10px;">→</div>
+          <div style="font-size:14px;color:var(--muted2);line-height:1.6;">После 3 стопов подряд увеличил плечо, чтобы «отбиться» — и <strong style="color:var(--text);">сливаешь весь депозит</strong></div>
+        </div>
+      </div>
+
+      <div style="border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card);">
+        <div style="height:200px;overflow:hidden;">
+          <img src="gallery-9.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <div style="padding:20px;">
+          <div style="font-size:20px;color:var(--accent);font-weight:700;margin-bottom:10px;">→</div>
+          <div style="font-size:14px;color:var(--muted2);line-height:1.6;">Торгуешь 6 месяцев, а счёт всё на том же уровне <strong style="color:var(--text);">(или ниже)</strong></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="pain-conclusion">
+      Виноват не анализ, а то, как <strong style="color:var(--text);">твоя голова ведёт себя в стрессе</strong>.<br>
+      На мастер-классе покажем, как перестать быть заложником эмоций.
+    </div>
+    <div style="text-align:center;">
+      <button onclick="openForm()" class="btn btn-accent btn-lg">ПОДАТЬ ЗАЯВКУ →</button>
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 5: ПРОГРАММА -->
+<section id="program">
+  <div class="section-wrap">
+    <div class="s-header">
+      <div><h2 class="s-title">ЧТО БУДЕТ<br>НА МАСТЕР-КЛАССЕ</h2></div>
+      <p class="s-desc">3 часа практики. Конкретные инструменты без воды.</p>
+    </div>
+    <div class="program-blocks">
+
+      <div class="prog-block">
+        <div class="prog-block-header"><span class="prog-block-icon">🧠</span><div class="prog-block-title">БЛОК 1: Почему ты сливаешь при правильном анализе</div></div>
+        <div class="prog-block-points">
+          <div class="prog-point">Тест: какой у тебя трейдерский психотип</div>
+          <div class="prog-point">3 ловушки, в которые попадают 90% новичков</div>
+        </div>
+        <div class="prog-result">→ Уйдёшь с пониманием: что именно в твоей голове мешает зарабатывать</div>
+      </div>
+
+      <div class="prog-block">
+        <div class="prog-block-header"><span class="prog-block-icon">🛡</span><div class="prog-block-title">БЛОК 2: Система «Анти-слив»</div></div>
+        <div class="prog-block-points">
+          <div class="prog-point">Протокол действий при серии убытков</div>
+          <div class="prog-point">Готовый план: что делать, когда всё идёт не так</div>
+        </div>
+      </div>
+
+      <div class="prog-block">
+        <div class="prog-block-header"><span class="prog-block-icon">📊</span><div class="prog-block-title">БЛОК 3: Когда стоп — это не провал</div></div>
+        <div class="prog-block-points">
+          <div class="prog-point">Разберём 3 твои реальные сделки (принеси скриншоты!)</div>
+          <div class="prog-point">Научишься отличать «плохую сделку» от «плохого результата»</div>
+        </div>
+        <div class="prog-result">→ Перестанешь мучиться после каждого стопа</div>
+      </div>
+
+      <div class="prog-block">
+        <div class="prog-block-header"><span class="prog-block-icon">⚡️</span><div class="prog-block-title">БЛОК 4: Как торговать, когда руки трясутся</div></div>
+        <div class="prog-block-points">
+          <div class="prog-point">Механизм: страх → действие (вместо страх → эмоция)</div>
+          <div class="prog-point">Твои персональные триггеры жадности</div>
+        </div>
+        <div class="prog-result">→ Получишь чёткие правила, которые защитят депозит от тебя самого</div>
+      </div>
+
+      <div class="prog-block">
+        <div class="prog-block-header"><span class="prog-block-icon">📈</span><div class="prog-block-title">БЛОК 5: Работает ли твоя стратегия или ты везунчик?</div></div>
+        <div class="prog-block-points">
+          <div class="prog-point">Простая статистика: 3 цифры, которые нужно считать</div>
+          <div class="prog-point">Честный анализ: где именно ты теряешь деньги</div>
+        </div>
+        <div class="prog-result">→ Уйдёшь с пониманием: что фиксить в первую очередь</div>
+      </div>
+
+      <div class="prog-block" style="border-color:rgba(200,241,53,0.3);background:rgba(200,241,53,0.03);">
+        <div class="prog-block-header"><span class="prog-block-icon">💰</span><div class="prog-block-title">БЛОК 6: Как получить депозит $100 000 в управление</div></div>
+        <div class="prog-block-points">
+          <div class="prog-point">Чёткий план от практикующих трейдеров как сдать экзамен в проп</div>
+          <div class="prog-point">Как получить $100 000 и торговать на чужие деньги</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 6: ПОДАРКИ -->
+<section id="bonuses">
+  <div class="section-wrap">
+    <div class="gifts-card">
+      <div class="gifts-badge">🎁 Каждый участник получает</div>
+      <h2 class="gifts-title">ПОДАРКИ<br><span>УЧАСТНИКАМ</span></h2>
+      <p class="gifts-sub">Все кто приходит на мастер-класс — уходят не с пустыми руками.</p>
+      <div class="gifts-grid">
+        <div class="gift-item">
+          <div class="gift-icon" style="background-image:url('gift-merch.jpg');background-size:cover;background-position:center;"></div>
+          <div><div class="gift-name">Мерч от партнёров</div><div class="gift-desc">Фирменный мерч от партнёров мастер-класса</div></div>
+        </div>
+        <div class="gift-item">
+          <div class="gift-icon" style="background-image:url('gift-mexc.png');background-size:cover;background-position:center;"></div>
+          <div><div class="gift-name">Депозит для торговли от биржи</div><div class="gift-desc">Бонусный капитал на счету — начни торговать сразу после мастер-класса</div></div>
+        </div>
+        <div class="gift-item">
+          <div class="gift-icon" style="background-image:url('gift-telegram.jpg');background-size:cover;background-position:center;"></div>
+          <div><div class="gift-name">Закрытый чат KRIPTOROMM</div><div class="gift-desc">Полезные материалы, разборы сделок и доступ к закрытому сообществу</div></div>
+        </div>
+        <div class="gift-item">
+          <div class="gift-icon" style="background-image:url('gift-mexc.png');background-size:cover;background-position:center;"></div>
+          <div><div class="gift-name">Бонусы от MEXC</div><div class="gift-desc">Эксклюзивные бонусы от одной из крупнейших криптовалютных бирж</div></div>
+        </div>
+      </div>
+      <div style="margin-top:40px;">
+        <button onclick="openForm()" class="btn btn-accent btn-lg">ПОДАТЬ ЗАЯВКУ →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 7: КОГДА И ГДЕ -->
+<section id="details">
+  <div class="section-wrap">
+    <div class="s-header">
+      <div><h2 class="s-title">КОГДА<br>И ГДЕ</h2></div>
+      <p class="s-desc">Живой оффлайн-формат. Вопросы в зале. Разбор ваших реальных ситуаций.</p>
+    </div>
+    <div class="details-grid">
+      <div class="detail-cell"><div class="detail-cell-label">Дата</div><div class="detail-cell-icon">📅</div><div class="detail-cell-value">4 апреля 2026<br>Суббота</div></div>
+      <div class="detail-cell"><div class="detail-cell-label">Время</div><div class="detail-cell-icon">⏰</div><div class="detail-cell-value">12:00 – 15:00<br>Сбор с 11:40</div></div>
+      <div class="detail-cell"><div class="detail-cell-label">Место</div><div class="detail-cell-icon">📍</div><div class="detail-cell-value">Horizont Balance Zal<br>Куйбышева, 22, корп. 6</div></div>
+      <div class="detail-cell"><div class="detail-cell-label">Формат</div><div class="detail-cell-icon">🎤</div><div class="detail-cell-value">Живой оффлайн<br>Вопросы из зала</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 8: БИЛЕТЫ -->
+<section id="tickets">
+  <div class="section-wrap">
+    <div class="s-header">
+      <div><h2 class="s-title">💰 ПРИНЯТЬ<br>УЧАСТИЕ</h2></div>
+      <p class="s-desc">Мест всего 50. Осталось: <strong style="color:var(--red);font-size:20px;">12</strong></p>
+    </div>
+    <div class="pricing-grid" style="margin-bottom:28px;">
+      <div class="pricing-card">
+        <div class="pricing-label">Стандарт</div>
+        <div class="pricing-price">50 <span>BYN</span></div>
+        <div class="pricing-features">
+          <div class="pricing-feature">3 часа живого разбора</div>
+          <div class="pricing-feature">Понимание что нужно для стабильной прибыльной торговли</div>
+          <div class="pricing-feature">Бесплатный депозит для старта от MEXC</div>
+          <div class="pricing-feature">Мерч и подарки от партнёров</div>
+        </div>
+        <a href="https://bezkassira.by/-kripto-subbotnik-2-oflajn-master-klass-s-romanom-martynenko-min-192372/" target="_blank" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px;">КУПИТЬ ПРЯМО СЕЙЧАС →</a>
+      </div>
+      <div class="pricing-card pricing-card--accent">
+        <div class="pricing-badge">Выгоднее</div>
+        <div class="pricing-label">С репостом</div>
+        <div class="pricing-price"><s style="font-size:32px;color:rgba(255,255,255,0.25);font-weight:600;">50 BYN</s> 30 <span>BYN</span></div>
+        <div class="pricing-desc">Сделай репост <a href="https://www.instagram.com/reel/DWXCKoVDnXJ/?igsh=MXYwbmNiNTV1cGk5eA==" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;">этого поста</a> и получи скидку — мы с тобой свяжемся</div>
+        <a href="https://www.instagram.com/reel/DWXCKoVDnXJ/?igsh=MXYwbmNiNTV1cGk5eA==" target="_blank" class="btn btn-accent" style="width:100%;justify-content:center;margin-top:8px;">СДЕЛАТЬ РЕПОСТ →</a>
+      </div>
+    </div>
+    <div class="pricing-why">
+      <div style="font-family:'Unbounded',sans-serif;font-size:clamp(20px,3vw,32px);font-weight:800;letter-spacing:-0.02em;color:var(--text);margin-bottom:16px;">🔥 ПОЧЕМУ ТАК ДЁШЕВО?</div>
+      <div style="font-size:15px;color:var(--muted2);line-height:1.7;">Это не вебинар за $500. Это живой формат для локального комьюнити. От практиков, а не инфобизнесменов. <strong style="color:var(--text);">Цена = себестоимость зала + кофе.</strong></div>
+    </div>
+    <div class="pricing-warn">
+      ⚠️ <strong style="color:var(--red);">ВАЖНО:</strong>&nbsp;Мест всего 50. Осталось: <strong style="color:var(--red);"><span class="seats-num">12</span></strong>
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 9: ГАРАНТИЯ -->
+<section id="guarantee">
+  <div class="section-wrap">
+    <div class="guarantee-card">
+      <div class="guarantee-icon">🛡</div>
+      <div>
+        <div class="guarantee-title">НЕ ПОНРАВИЛОСЬ —<br>ГАРАНТИЯ ВОЗВРАТА</div>
+        <p class="guarantee-text">
+          Если после первого часа поймёшь, что мастер-класс не для тебя — вернём 50% стоимости без вопросов.<br><br>
+          Напиши в Telegram <a href="https://t.me/andrey_proup" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;">@andrey_proup</a> в течение первого часа мастер-класса — вернём <strong style="color:var(--accent);">25 BYN</strong> без вопросов.
+        </p>
+        <div style="font-size:15px;color:var(--text);font-weight:600;margin-bottom:24px;">Мы уверены в ценности. Справедливо?</div>
+        <a href="https://bezkassira.by/-kripto-subbotnik-2-oflajn-master-klass-s-romanom-martynenko-min-192372/" target="_blank" class="btn btn-accent">КУПИТЬ ПРЯМО СЕЙЧАС →</a>
+        <div style="margin-top:16px;">
+          <a href="#faq-return-item" onclick="setTimeout(function(){var item=document.getElementById('faq-return-item');item.classList.add('open');item.querySelector('.faq-body').style.display='block';},100);" style="font-size:12px;color:var(--muted);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.2);">*условия возврата</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 10: КАК ЭТО БЫЛО -->
+<section id="gallery">
+  <div class="section-wrap">
+    <div class="s-header">
+      <div><h2 class="s-title">КАК ЭТО<br>БЫЛО</h2></div>
+      <p class="s-desc">Фотографии и отзывы с Крипто-Субботника #1</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item gallery-tall"><img src="gallery-1.jpg" alt=""></div>
+      <div class="gallery-item"><img src="gallery-2.jpg" alt=""></div>
+      <div class="gallery-item"><img src="gallery-3.jpg" alt=""></div>
+      <div class="gallery-item gallery-tall"><img src="gallery-4.jpg" alt=""></div>
+      <div class="gallery-item"><img src="gallery-5.jpg" alt=""></div>
+      <div class="gallery-item"><img src="gallery-6.jpg" alt=""></div>
+      <div class="gallery-item"><img src="gallery-9.jpg" alt=""></div>
+      <div class="gallery-item gallery-tall"><img src="gallery-10.jpg" alt=""></div>
+      <div class="gallery-item"><img src="gallery-11.jpg" alt="" style="object-position:center 30%;"></div>
+      <div class="gallery-item"><img src="gallery-12.jpg" alt=""></div>
+    </div>
+    <h3 style="font-family:'Unbounded',sans-serif;font-size:clamp(20px,3vw,32px);font-weight:800;letter-spacing:-0.02em;margin:60px 0 32px;">ОТЗЫВЫ УЧАСТНИКОВ</h3>
+    <div class="reviews-grid">
+      <div class="review-card"><img src="gallery-7.jpg" alt="Отзыв участника"></div>
+      <div class="review-card"><img src="gallery-8.jpg" alt="Отзыв участника"></div>
+      <div class="review-card"><img src="review-2.jpg" alt="Отзыв участника"></div>
+      <div class="review-card"><img src="review-3.jpg" alt="Отзыв участника"></div>
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 11: ПАРТНЁРЫ -->
+<section id="partners">
+  <div class="section-wrap">
+    <div class="s-header">
+      <div><h2 class="s-title">ПАРТНЁРЫ</h2></div>
+      <p class="s-desc">Специальные условия для участников Крипто-Субботника</p>
+    </div>
+    <div class="partners-grid">
+      <a href="https://www.mexc.com/acquisition/custom-sign-up?shareCode=mexc-12BoHD" target="_blank" class="partner-card">
+        <img src="logo-mexc.png" alt="MEXC" class="partner-logo">
+        <div><div class="partner-name">MEXC</div><div class="partner-desc">Одна из крупнейших криптовалютных бирж. Бонусы и эксклюзивные условия для участников</div><div class="partner-link">Зарегистрироваться →</div></div>
+      </a>
+      <a href="https://hashhedge.com/?fpr=andrey33" target="_blank" class="partner-card">
+        <img src="logo-hashhedge.png" alt="Hash Hedge" class="partner-logo">
+        <div><div class="partner-name">Hash Hedge</div><div class="partner-desc">Проп-трейдинговая платформа. Специальные условия для участников мастер-класса</div><div class="partner-link">Узнать подробнее →</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 12: FAQ -->
+<section id="faq">
+  <div class="section-wrap">
+    <div class="s-header">
+      <div><h2 class="s-title">ЧАСТЫЕ<br>ВОПРОСЫ</h2></div>
+      <p class="s-desc">Если что-то осталось непонятным — напиши нам в <a href="https://t.me/andrey_proup" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;">Telegram →</a></p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <div class="faq-trigger" onclick="toggleFaq(this)"><span class="faq-q">Кому подходит мастер-класс?</span><span class="faq-icon">+</span></div>
+        <div class="faq-body">Мастер-класс подходит тем, кто уже торгует, но стабильно теряет деньги — и не понимает почему. Также тем, кто только начинает и хочет с первых шагов выстроить правильную систему. Опыт — от 0 до 3 лет.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)"><span class="faq-q">Это онлайн или оффлайн?</span><span class="faq-icon">+</span></div>
+        <div class="faq-body">Только оффлайн, живой формат. Horizont Balance Zal, ул. Куйбышева, 22, корп. 6, вход 2. Сбор с 11:40, старт в 12:00.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)"><span class="faq-q">Как участвовать в розыгрыше?</span><span class="faq-icon">+</span></div>
+        <div class="faq-body">Купи билет на мастер-класс, подпишись на наш <a href="https://t.me/W3Belarus" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;">Telegram-канал</a> и на канал <a href="https://t.me/kriptoromm" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;">KRIPTOROMM</a>. Определим онлайн 21.03 в 22:00 в канале W3B.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)"><span class="faq-q">Будет ли запись мастер-класса?</span><span class="faq-icon">+</span></div>
+        <div class="faq-body">Мастер-класс проходит в живом формате без записи — это часть его ценности. Разборы ситуаций из зала, вопросы в реальном времени, живое взаимодействие со спикерами.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)"><span class="faq-q">Есть ли скидка для тех, кто был на Крипто-Субботнике #1?</span><span class="faq-icon">+</span></div>
+        <div class="faq-body">Да. Если ты был на Крипто-Субботнике #1 — твоя скидка 5 BYN. Напиши нам при покупке.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)"><span class="faq-q">Что если мастер-класс не подойдёт?</span><span class="faq-icon">+</span></div>
+        <div class="faq-body">Если после первого часа поймёшь, что мастер-класс не для тебя — вернём 50% стоимости (25 BYN). Напиши в Telegram @andrey_proup в течение первого часа.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)"><span class="faq-q">Как купить билет?</span><span class="faq-icon">+</span></div>
+        <div class="faq-body">Нажми кнопку «Купить прямо сейчас» — она ведёт на страницу покупки. Мест ограниченное количество.</div>
+      </div>
+      <div class="faq-item" id="faq-return-item">
+        <div class="faq-trigger" onclick="toggleFaq(this)"><span class="faq-q">Условия возврата</span><span class="faq-icon">+</span></div>
+        <div class="faq-body" id="faq-return">
+          Если после первого часа поймёшь, что мастер-класс не для тебя — вернём 50% стоимости без вопросов. Напиши в Telegram <a href="https://t.me/andrey_proup" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;">@andrey_proup</a> в течение первого часа мастер-класса — вернём <strong>25 BYN</strong> без вопросов.<br><br>
+          <span style="font-size:13px;color:var(--muted);">* Условие не распространяется на билеты, приобретённые со скидкой (по промокоду за репост).</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- БЛОК 13: CTA FINAL -->
+<section id="cta-final">
+  <div class="cta-inner">
+    <div class="cta-bg"></div>
+    <div style="position:relative;z-index:2;">
+      <div class="cta-eyebrow">Осталось мало мест · 4 апреля · Минск</div>
+      <h2 class="cta-title">ВОЙДИ В<br><span>10%</span></h2>
+      <p class="cta-sub">Живой мастер-класс с практикующими трейдерами. Всё что нужно знать о голове трейдера — в одном ивенте.</p>
+      <div class="spots-badge" style="margin-bottom:28px;">⚡️ Осталось <span>12 мест из 50</span></div>
+      <br>
+      <a href="https://bezkassira.by/-kripto-subbotnik-2-oflajn-master-klass-s-romanom-martynenko-min-192372/" target="_blank" class="btn btn-accent btn-lg">КУПИТЬ ПРЯМО СЕЙЧАС →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">KRIPTO<span>ROMM</span></div>
+  <div style="font-size:12px;color:var(--muted);">© 2026 KRIPTOROMM · Крипто-Субботник #2</div>
+  <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="font-size:11px;color:var(--muted);font-weight:500;">KRIPTOROMM</span>
+      <a href="https://t.me/kriptoromm" target="_blank" style="color:var(--muted);text-decoration:none;font-size:12px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Telegram</a>
+      <a href="https://www.youtube.com/@KRIPTOROMM" target="_blank" style="color:var(--muted);text-decoration:none;font-size:12px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">YouTube</a>
+      <a href="https://www.instagram.com/kriptoromm" target="_blank" style="color:var(--muted);text-decoration:none;font-size:12px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Instagram</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <img src="logo-w3b-icon.png" alt="W3B" style="height:18px;width:18px;object-fit:contain;">
+      <span style="font-size:11px;color:var(--muted);font-weight:500;">W3B Community</span>
+      <a href="https://t.me/W3Belarus" target="_blank" style="color:var(--muted);text-decoration:none;font-size:12px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Telegram</a>
+      <a href="https://www.instagram.com/w3belarus?igsh=b2M2dzcxenphc2lq" target="_blank" style="color:var(--muted);text-decoration:none;font-size:12px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Instagram</a>
+    </div>
+  </div>
+</footer>
+
+<!-- POPUP -->
+<div id="popup-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+  <div style="background:#161616;border:1px solid rgba(200,241,53,0.3);border-radius:20px;padding:48px 40px;max-width:480px;width:90%;text-align:center;position:relative;">
+    <button onclick="document.getElementById('popup-overlay').style.display='none'" style="position:absolute;top:16px;right:20px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:24px;cursor:pointer;line-height:1;">×</button>
+    <div style="display:inline-block;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:rgba(200,241,53,0.12);color:#c8f135;border:1px solid rgba(200,241,53,0.25);padding:6px 16px;border-radius:40px;margin-bottom:24px;">🎁 Забирай бонус</div>
+    <h2 style="font-family:'Unbounded',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:900;letter-spacing:-0.02em;line-height:1.1;color:#fff;margin-bottom:16px;">ПОЛУЧИ ДЕПОЗИТ<br><span style="color:#c8f135;">ДЛЯ ТОРГОВЛИ</span></h2>
+    <p style="font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:24px;">Бонусный капитал на счету — начни торговать сразу после мастер-класса</p>
+    <a href="#bonuses" onclick="document.getElementById('popup-overlay').style.display='none'" style="display:block;background:#c8f135;color:#000;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.05em;padding:16px 32px;border-radius:8px;text-decoration:none;margin-bottom:16px;">ПОЛУЧИТЬ БОНУС →</a>
+    <a href="#bonuses" onclick="document.getElementById('popup-overlay').style.display='none'" style="font-size:13px;color:rgba(255,255,255,0.4);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.2);">Подробнее о подарках</a>
+  </div>
+</div>
+
+<!-- ФОРМА ЗАЯВКИ -->
+<div id="form-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+  <div style="background:#161616;border:1px solid rgba(200,241,53,0.25);border-radius:20px;padding:48px 40px;max-width:480px;width:90%;position:relative;">
+    <button onclick="closeForm()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:24px;cursor:pointer;line-height:1;">×</button>
+    <div style="font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:rgba(200,241,53,0.12);color:#c8f135;border:1px solid rgba(200,241,53,0.25);padding:6px 16px;border-radius:40px;display:inline-block;margin-bottom:24px;">📋 Заявка на участие</div>
+    <h2 style="font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;letter-spacing:-0.02em;line-height:1.2;color:#fff;margin-bottom:8px;">КРИПТО-СУББОТНИК #2</h2>
+    <p style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:28px;">4 апреля · Минск · Horizont Balance Zal</p>
+
+    <div id="form-fields">
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.08em;display:block;margin-bottom:8px;">ИМЯ</label>
+        <input id="f-name" type="text" placeholder="Как тебя зовут?" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px 16px;font-size:15px;color:#fff;outline:none;font-family:'Inter',sans-serif;" onfocus="this.style.borderColor='rgba(200,241,53,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.08em;display:block;margin-bottom:8px;">TELEGRAM *</label>
+        <input id="f-tg" type="text" placeholder="@username" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px 16px;font-size:15px;color:#fff;outline:none;font-family:'Inter',sans-serif;" onfocus="this.style.borderColor='rgba(200,241,53,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+      </div>
+      <div style="margin-bottom:24px;">
+        <label style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.08em;display:block;margin-bottom:8px;">ТЕЛЕФОН *</label>
+        <input id="f-phone" type="tel" placeholder="+375 XX XXX XX XX" style="width:100%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:14px 16px;font-size:15px;color:#fff;outline:none;font-family:'Inter',sans-serif;" onfocus="this.style.borderColor='rgba(200,241,53,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+      </div>
+      <button onclick="submitForm()" id="submit-btn" style="width:100%;background:#c8f135;color:#000;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.05em;padding:16px 32px;border-radius:8px;border:none;cursor:pointer;transition:opacity 0.2s;">ПОДАТЬ ЗАЯВКУ →</button>
+      <p style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center;margin-top:12px;">Нажимая кнопку, ты соглашаешься на обработку контактных данных</p>
+    </div>
+
+    <div id="form-success" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:48px;margin-bottom:16px;">✅</div>
+      <h3 style="font-family:'Unbounded',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:12px;">Заявка принята!</h3>
+      <p style="font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6;">Мы свяжемся с тобой в ближайшее время в Telegram.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const BOT_TOKEN = '8548402720:AAHE_58aECDQopshG5hey6oJdSQb048IuBU';
+const CHAT_ID = '-1003686767867';
+
+function openForm() {
+  document.getElementById('form-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeForm() {
+  document.getElementById('form-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  // reset form
+  document.getElementById('form-fields').style.display = 'block';
+  document.getElementById('form-success').style.display = 'none';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-tg').value = '';
+  document.getElementById('f-phone').value = '';
+}
+
+// Close on overlay click
+document.getElementById('form-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeForm();
+});
+
+async function submitForm() {
+  const name = document.getElementById('f-name').value.trim();
+  const tg = document.getElementById('f-tg').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+
+  if (!tg || !phone) {
+    alert('Пожалуйста, заполни Telegram и номер телефона');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Отправляем...';
+  btn.disabled = true;
+
+  const text = `🎯 *Новая заявка — Крипто-Субботник #2*\n\n👤 Имя: ${name || 'не указано'}\n📱 Telegram: ${tg}\n📞 Телефон: ${phone}\n\n📅 4 апреля · Минск`;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'Markdown' })
+    });
+    document.getElementById('form-fields').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+  } catch(e) {
+    btn.textContent = 'ПОДАТЬ ЗАЯВКУ →';
+    btn.disabled = false;
+    alert('Ошибка отправки. Попробуй ещё раз.');
+  }
+}
+
+function toggleProg(trigger) {
+  const item = trigger.closest('.prog-item');
+  item.classList.toggle('open');
+}
+function toggleFaq(trigger) {
+  const item = trigger.closest('.faq-item');
+  item.classList.toggle('open');
+}
+setTimeout(function() {
+  document.getElementById('popup-overlay').style.display = 'flex';
+}, 8000);
+
+// ─── СЧЁТЧИК МЕСТ: меняй только эту цифру ───
+var SEATS_LEFT = 12;
+var SEATS_TOTAL = 50;
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.seats-num').forEach(function(el) { el.textContent = SEATS_LEFT; });
+  document.querySelectorAll('.seats-total').forEach(function(el) { el.textContent = SEATS_TOTAL; });
+});
+</script>
+</body>
+</html>
